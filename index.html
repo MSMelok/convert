@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Zone Converter | Global to Cairo</title>
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/dist/date-fns.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns-tz@2.0.0/dist/date-fns-tz.min.js"></script>
+</head>
+<body>
+    <div class="theme-switch">
+        <button id="themeToggle" aria-label="Toggle theme">
+            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+    </div>
+    <div class="container">
+        <header>
+            <h1>Time Zone Converter</h1>
+            <p class="subtitle">Convert Any Time Zone to Cairo Time (UTC+02:00)</p>
+        </header>
+
+        <main>
+            <div class="converter-container">
+                <div class="input-section">
+                    <h2>Enter Times</h2>
+                    <form id="timeForm">
+                        <div class="timezone-select">
+                            <label for="sourceTimezone">Source Time Zone</label>
+                            <select id="sourceTimezone" required>
+                                <option value="America/New_York">Eastern Time (ET)</option>
+                                <option value="America/Chicago">Central Time (CT)</option>
+                                <option value="America/Denver">Mountain Time (MT)</option>
+                                <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                                <option value="Europe/London">London (GMT/BST)</option>
+                                <option value="Europe/Paris">Paris (CET)</option>
+                                <option value="Asia/Dubai">Dubai (GST)</option>
+                                <option value="Asia/Tokyo">Tokyo (JST)</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="shiftStartTime">Shift Start Time</label>
+                            <input type="time" id="shiftStartTime" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="shiftEndTime">Shift End Time</label>
+                            <input type="time" id="shiftEndTime" required>
+                        </div>
+
+                        <div class="breaks-section">
+                            <h3>Break Times</h3>
+                            <div class="input-group">
+                                <label for="firstBreakTime">First Break</label>
+                                <input type="time" id="firstBreakTime">
+                            </div>
+                            <div class="input-group">
+                                <label for="secondBreakTime">Second Break</label>
+                                <input type="time" id="secondBreakTime">
+                            </div>
+                            <div class="input-group">
+                                <label for="thirdBreakTime">Third Break</label>
+                                <input type="time" id="thirdBreakTime">
+                            </div>
+                        </div>
+
+                        <div class="ot-breaks-section">
+                            <div class="section-header">
+                                <h3>OT Break Times</h3>
+                                <button type="button" id="addOtBreak" class="add-break-btn" aria-label="Add OT break">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                </button>
+                            </div>
+                            <div id="otBreaksContainer">
+                                <!-- OT breaks will be added here dynamically -->
+                            </div>
+                        </div>
+
+                        <div class="actions">
+                            <button type="button" id="clearAll" class="clear-btn">
+                                Clear All
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="output-section">
+                    <h2>Cairo Time (EET)</h2>
+                    <div class="results">
+                        <div class="result-item">
+                            <span class="label">Shift Start:</span>
+                            <span id="cairoShiftStart" class="value">--:-- AM</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="label">Shift End:</span>
+                            <span id="cairoShiftEnd" class="value">--:-- PM</span>
+                        </div>
+                        <div class="result-group">
+                            <h3>Break Times</h3>
+                            <div class="result-item">
+                                <span class="label">First Break:</span>
+                                <span id="cairoFirstBreak" class="value">--:-- AM</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="label">Second Break:</span>
+                                <span id="cairoSecondBreak" class="value">--:-- PM</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="label">Third Break:</span>
+                                <span id="cairoThirdBreak" class="value">--:-- PM</span>
+                            </div>
+                        </div>
+                        <div class="result-group">
+                            <h3>OT Break Times</h3>
+                            <div id="otBreaksResults">
+                                <!-- OT break results will be added here dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Designed and Coded by <a href="https://msmelok.github.io/R4_2.0" target="_blank" rel="noopener noreferrer">Muhammad Meluk</a></p>
+        </footer>
+    </div>
+    <script src="./main.js"></script>
+</body>
+</html>
